@@ -96,6 +96,39 @@ class Task {
     }
 }
 
+class HighPriorityTask extends Task {
+    public HighPriorityTask(int id, String title, String description) {
+        super(id, title, description);
+    }
+
+    @Override
+    public String toString() {
+        return "[HIGH] " + super.toString();
+    }
+}
+
+class MediumPriorityTask extends Task {
+    public MediumPriorityTask(int id, String title, String description) {
+        super(id, title, description);
+    }
+
+    @Override
+    public String toString() {
+        return "[MEDIUM] " + super.toString();
+    }
+}
+
+class LowPriorityTask extends Task {
+    public LowPriorityTask(int id, String title, String description) {
+        super(id, title, description);
+    }
+
+    @Override
+    public String toString() {
+        return "[LOW] " + super.toString();
+    }
+}
+
 class TaskManager {
     private List<Task> tasks = new ArrayList<>();
     private int taskIdCounter = 1;
@@ -107,6 +140,11 @@ class TaskManager {
     public void addTask(Task task) {
         task.setId(taskIdCounter++);
         tasks.add(task);
+        tasks.sort(Comparator.comparingInt(task1 -> {
+            if (task1 instanceof HighPriorityTask) return 1;
+            if (task1 instanceof MediumPriorityTask) return 2;
+            return 3;
+        }));
     }
 
     public void editTask(int id, Task task) {
@@ -167,7 +205,19 @@ class InputScanner {
         System.out.println("Enter Task Description (or press Enter to skip):");
         String description = scanner.nextLine();
 
-        return new Task(-1, title, description);
+        System.out.println("Enter Task Priority (1: High, 2: Medium, 3: Low):");
+        int priority = Integer.parseInt(scanner.nextLine());
+
+        switch (priority) {
+            case 1:
+                return new HighPriorityTask(-1, title, description);
+            case 2:
+                return new MediumPriorityTask(-1, title, description);
+            case 3:
+                return new LowPriorityTask(-1, title, description);
+            default:
+                return new LowPriorityTask(-1, title, description);
+        }
     }
 
     public int askId() {
